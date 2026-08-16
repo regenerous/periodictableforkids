@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#dffff8">
+  <meta name="description" content="A playful periodic table, atom explorer, and molecule maker for kids ages 6–8.">
+  <title>Bubble Lab — Periodic Table for Kids</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to the fun</a>
+
+  <header class="app-header">
+    <button class="brand" type="button" data-view-target="table" aria-label="Bubble Lab home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span><strong>Bubble Lab</strong><small>What is our world made of?</small></span>
+    </button>
+
+    <nav class="main-nav" aria-label="Choose an activity">
+      <button class="nav-button is-active" type="button" data-view-target="table" aria-current="page">
+        <span aria-hidden="true">🫧</span><b>Elements</b>
+      </button>
+      <button class="nav-button" type="button" data-view-target="maker">
+        <span aria-hidden="true">🧪</span><b>Mix</b>
+      </button>
+      <button class="nav-button" type="button" data-view-target="collection">
+        <span aria-hidden="true">⭐</span><b>Stickers</b><em id="navStickerCount">0</em>
+      </button>
+    </nav>
+
+    <button id="soundToggle" class="sound-toggle" type="button" aria-pressed="true">
+      <span aria-hidden="true">🔊</span><b>Sound on</b>
+    </button>
+  </header>
+
+  <main id="main-content">
+    <section id="tableView" class="app-view is-active" data-view="table" aria-labelledby="tableTitle">
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">Tap. Watch. Discover.</span>
+          <h1 id="tableTitle">The element bubbles</h1>
+          <p>Every box is one kind of tiny building block. Tap one to wake it up!</p>
+        </div>
+        <div class="heading-tip" aria-hidden="true"><span>👆</span> Pick any bubble</div>
+      </div>
+
+      <div class="explorer-layout">
+        <section class="table-card" aria-label="Interactive periodic table">
+          <div class="table-tools">
+            <p><strong>Color cousins</strong><span>Elements with the same color act a little alike.</span></p>
+            <button id="legendToggle" type="button" aria-expanded="false" aria-controls="legend">Show colors</button>
+          </div>
+          <div id="legend" class="legend" hidden></div>
+          <div class="table-scroll" tabindex="0" aria-label="Periodic table. Scroll sideways if needed.">
+            <div id="periodicTable" class="periodic-table"></div>
+          </div>
+          <p class="swipe-hint"><span aria-hidden="true">↔</span> Swipe sideways to see every bubble</p>
+        </section>
+
+        <aside id="elementDetail" class="element-detail" aria-live="polite" aria-label="Selected element"></aside>
+      </div>
+    </section>
+
+    <section id="makerView" class="app-view" data-view="maker" aria-labelledby="makerTitle" hidden>
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">Atoms can team up!</span>
+          <h1 id="makerTitle">The Molecule Maker</h1>
+          <p>Pick atoms, put them together, and discover what their team can make.</p>
+        </div>
+        <button id="readLesson" class="heading-tip interactive-tip" type="button"><span aria-hidden="true">🔊</span> Read this page</button>
+      </div>
+
+      <section class="atom-lesson" aria-labelledby="atomLessonTitle">
+        <div class="lesson-copy">
+          <span class="lesson-number">1</span>
+          <div><h2 id="atomLessonTitle">One atom or an atom team?</h2><p>An <strong>atom</strong> is one tiny building block. When atoms link up, they can make a <strong>molecule</strong>—a tiny team!</p></div>
+        </div>
+        <div class="lesson-demo" aria-label="Animated example showing one oxygen atom and a water molecule">
+          <div class="lesson-example"><div class="demo-atom oxygen">O</div><strong>1 atom</strong><span>one oxygen</span></div>
+          <div class="becomes" aria-hidden="true"><i></i><i></i><i></i><span>team up!</span></div>
+          <div class="lesson-example"><div class="demo-molecule"><div class="demo-atom hydrogen">H</div><div class="demo-atom oxygen big">O</div><div class="demo-atom hydrogen">H</div></div><strong>1 molecule</strong><span>water: H₂O</span></div>
+        </div>
+        <p class="science-note"><span aria-hidden="true">💡</span> Atoms only make certain teams. This game helps you find their recipes.</p>
+      </section>
+
+      <div class="maker-grid">
+        <section class="atom-pantry" aria-labelledby="pantryTitle">
+          <div class="section-heading"><span class="lesson-number">2</span><div><h2 id="pantryTitle">Pick your atoms</h2><p>Tap an atom to pop it into the mixer.</p></div></div>
+          <div id="atomPantry" class="pantry-grid"></div>
+        </section>
+
+        <section class="mixing-lab" aria-labelledby="mixerTitle">
+          <div class="section-heading"><span class="lesson-number">3</span><div><h2 id="mixerTitle">Build an atom team</h2><p id="mixerHelp">Your mixer is empty. Pick an atom!</p></div></div>
+          <div id="mixingBowl" class="mixing-bowl" aria-live="polite">
+            <div class="empty-mixer"><span aria-hidden="true">🫧</span><b>Atoms go here</b></div>
+          </div>
+          <div class="mixer-actions">
+            <button id="undoAtom" class="secondary-button" type="button" disabled>Undo</button>
+            <button id="clearMixer" class="secondary-button" type="button" disabled>Start over</button>
+            <button id="discoverMix" class="primary-button" type="button" disabled><span aria-hidden="true">✨</span> Discover!</button>
+          </div>
+          <div id="recipeHint" class="recipe-hint"><span aria-hidden="true">🕵️</span><p><strong>Need a clue?</strong><br>Try 2 hydrogen atoms and 1 oxygen atom.</p></div>
+        </section>
+      </div>
+
+      <section id="discoveryResult" class="discovery-result" aria-live="assertive" hidden></section>
+    </section>
+
+    <section id="collectionView" class="app-view" data-view="collection" aria-labelledby="collectionTitle" hidden>
+      <div class="page-heading">
+        <div>
+          <span class="eyebrow">Your discoveries</span>
+          <h1 id="collectionTitle">My Sticker Book</h1>
+          <p>Every new element and atom team gives you a sticker. Can you find them all?</p>
+        </div>
+        <div class="collection-total"><span aria-hidden="true">⭐</span><strong id="collectionTotal">0</strong><small>stickers found</small></div>
+      </div>
+
+      <section class="awards-card" aria-labelledby="awardsTitle">
+        <div class="section-heading"><span class="lesson-number">🏆</span><div><h2 id="awardsTitle">Bubble Badges</h2><p>Special prizes for curious explorers.</p></div></div>
+        <div id="awardsGrid" class="awards-grid"></div>
+      </section>
+
+      <section class="sticker-section" aria-labelledby="moleculeStickersTitle">
+        <div class="sticker-heading"><div><h2 id="moleculeStickersTitle">Atom Team Stickers</h2><p>Find recipes in the Molecule Maker.</p></div><button type="button" data-view-target="maker">Mix atoms</button></div>
+        <div id="moleculeStickers" class="sticker-grid molecule-stickers"></div>
+      </section>
+
+      <section class="sticker-section" aria-labelledby="elementStickersTitle">
+        <div class="sticker-heading"><div><h2 id="elementStickersTitle">Element Stickers</h2><p>Tap elements in the table to collect them.</p></div><button type="button" data-view-target="table">Explore elements</button></div>
+        <div id="elementStickers" class="sticker-grid"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer><span>Bubble Lab <b>v0.1.0</b></span><span>Made for curious kids and their grown-ups.</span></footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <div id="confetti" class="confetti" aria-hidden="true"></div>
+  <script src="js/elements.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

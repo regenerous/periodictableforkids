@@ -1,0 +1,9 @@
+{
+  "name": "Bubble Lab — Periodic Table for Kids",
+  "short_name": "Bubble Lab",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#dffff8",
+  "theme_color": "#5c65f2",
+  "icons": [{"src": "assets/favicon.svg", "sizes": "any", "type": "image/svg+xml"}]
+}

@@ -1,0 +1,55 @@
+name: Deploy Bubble Lab to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the site
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install test tools
+        run: npm ci
+      - name: Run interaction tests
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 &
+          sleep 1
+          npm test
+
+  deploy:
+    needs: test
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the site
+        uses: actions/checkout@v4
+      - name: Set up GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Upload the static site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Publish the site
+        id: deployment
+        uses: actions/deploy-pages@v4

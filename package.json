@@ -1,0 +1,12 @@
+{
+  "name": "periodic-table-for-kids",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A playful periodic table, atom explorer, and molecule maker for children ages 6–8.",
+  "scripts": {
+    "test": "node tests/smoke.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}
