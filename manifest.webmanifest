@@ -1,6 +1,6 @@
 {
-  "name": "Bubble Lab — Periodic Table for Kids",
-  "short_name": "Bubble Lab",
+  "name": "Periodic Table for Kids",
+  "short_name": "Periodic Table",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#dffff8",

@@ -1,4 +1,4 @@
-name: Deploy Bubble Lab to GitHub Pages
+name: Deploy Periodic Table for Kids to GitHub Pages
 
 on:
   push:
@@ -47,7 +47,7 @@ jobs:
           if gh release view "$version" >/dev/null 2>&1; then
             echo "$version is already published"
           elif git ls-remote --exit-code --tags origin "refs/tags/$version" >/dev/null; then
-            gh release create "$version" --title "Bubble Lab $version" --notes-file CHANGELOG.md
+            gh release create "$version" --title "Periodic Table for Kids $version" --notes-file CHANGELOG.md
           else
             echo "Tag $version is not available yet; skipping release creation"
           fi

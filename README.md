@@ -1,17 +1,17 @@
 <div align="center">
 
-![Bubble Lab — a playful periodic table for kids](docs/readme/hero.png)
+![Periodic Table for Kids — a playful science lab for young explorers](docs/readme/hero.png)
 
-# 🫧 Bubble Lab
+# 🫧 Periodic Table for Kids
 
 ### A periodic table children can touch, hear, mix, and collect.
 
-[![Release](https://img.shields.io/badge/release-v0.1.0-5c65f2?style=for-the-badge&logo=github)](https://github.com/regenerous/periodictableforkids/releases/tag/v0.1.0)
+[![Release](https://img.shields.io/badge/release-v0.2.0-5c65f2?style=for-the-badge&logo=github)](https://github.com/regenerous/periodictableforkids/releases/tag/v0.2.0)
 [![GitHub Pages](https://img.shields.io/badge/play-online-65e0d1?style=for-the-badge&logo=githubpages&logoColor=1c2854)](https://regenerous.github.io/periodictableforkids/)
 [![Ages 6–8](https://img.shields.io/badge/ages-6–8-ffd65a?style=for-the-badge)](#-made-for-young-explorers)
 [![iPad Friendly](https://img.shields.io/badge/iPad-friendly-ff6e9e?style=for-the-badge&logo=apple&logoColor=white)](#-ipad-and-touch-friendly)
 
-**[🚀 Open Bubble Lab](https://regenerous.github.io/periodictableforkids/)** · **[🧪 Try the Molecule Maker](https://regenerous.github.io/periodictableforkids/)**
+**[🚀 Open Periodic Table for Kids](https://regenerous.github.io/periodictableforkids/)** · **[🧪 Try the Molecule Maker](https://regenerous.github.io/periodictableforkids/)**
 
 </div>
 
@@ -19,7 +19,7 @@
 
 ## ⚡ Run it on your computer
 
-Bubble Lab is a static website. There is **nothing to install inside the project**—no npm packages, database, account, or build step. You only need [Git](https://git-scm.com/downloads), [Python 3](https://www.python.org/downloads/), and a modern browser.
+Periodic Table for Kids is a static website. There is **nothing to install inside the project**—no npm packages, database, account, or build step. You only need [Git](https://git-scm.com/downloads), [Python 3](https://www.python.org/downloads/), and a modern browser.
 
 <table>
 <tr>
@@ -78,27 +78,28 @@ Press <kbd>Ctrl</kbd> + <kbd>C</kbd> in the terminal when you want to stop the l
 
 ---
 
-## 🌈 What is Bubble Lab?
+## 🌈 What is Periodic Table for Kids?
 
-Bubble Lab introduces the periodic table without turning it into a wall of difficult words. Children learn by tapping, watching, listening, experimenting, and earning rewards.
+Periodic Table for Kids introduces the periodic table without turning it into a wall of difficult words. Children learn by tapping, watching, listening, experimenting, and earning rewards.
 
 | 🫧 Explore | ⚛️ Watch | 🧪 Combine | ⭐ Collect |
 |:--:|:--:|:--:|:--:|
-| Tap all 118 elements | See electrons swirl | Build atom teams | Earn stickers and badges |
-| Hear friendly explanations | Touch atoms to speed them up | Discover 10 recipes | Progress stays on the device |
+| Tap all 118 elements | Rotate atoms in 3D | Fill a crafting table | Earn stickers and badges |
+| Filter color cousins | Move and zoom the model | Follow 10 animated recipes | Progress stays on the device |
 
 ## 🔎 Explore every element
 
-Every colorful bubble is a large touch target. Tap an element to see its animated atom, hear its name, and discover three familiar things that contain or use it.
+Every colorful bubble is a large touch target. Tap an element to see its animated 3D atom, hear its name, and discover three familiar things that contain or use it. Tap a legend color to spotlight one family of color cousins; hover or focus it for a kid-friendly explanation.
 
 ![The element table with Carbon selected and its animated atom visible](docs/readme/elements-and-atom.png)
 
 ### How it works
 
 1. **Tap an element bubble.** Its color group and sticker appear immediately.
-2. **Touch the atom.** The electron shells speed up for a playful visual response.
-3. **Press the speaker.** Bubble Lab reads a short, age-appropriate explanation aloud.
-4. **Look at the object cards.** Pencils, plants, water, phones, bikes, and other familiar examples connect elements to everyday life.
+2. **Follow the puzzle marks.** The table highlights other elements that share a crafting recipe.
+3. **Drag the 3D atom.** Spin it, switch to Move mode, or use the zoom controls.
+4. **Press the speaker.** The site chooses the best natural or premium English voice available on the device.
+5. **Look at the object cards.** Pencils, plants, water, phones, bikes, and other familiar examples connect elements to everyday life.
 
 > [!NOTE]
 > The animation uses a simplified shell model so children can see and count electrons. Real electrons do not travel on tidy circular tracks.
@@ -115,7 +116,7 @@ Before mixing anything, children see the difference between one atom and a molec
 
 ## 🧪 Make molecules and familiar compounds
 
-Choose atom cards, pop them into the mixer, and press **Discover!** A correct recipe reveals a friendly explanation, formula, celebration, and collectible sticker.
+Choose a crafting clue, tap the glowing atom cards, and fill the nine-slot table. Animated ingredient meters show exactly how many atoms are still needed. When every meter is full, **Craft it!** unlocks a friendly explanation, formula, celebration, and collectible sticker.
 
 ![Two hydrogen atoms and one oxygen atom discovering a water sticker](docs/readme/molecule-maker.png)
 
@@ -133,7 +134,7 @@ The language stays simple, while the activity carefully calls salt, silica, and 
 
 ## 🏆 Build a Sticker Book
 
-Opening an element earns its sticker. Finding a recipe earns an Atom Team sticker. Larger milestones unlock Bubble Badges, turning exploration into a gentle Pokédex-style collection game.
+Opening an element earns its sticker. Finding a recipe earns an Atom Team sticker. Larger milestones unlock Discovery Badges, turning exploration into a gentle Pokédex-style collection game.
 
 ![The Sticker Book with badges, molecule discoveries, and element stickers](docs/readme/sticker-book.png)
 
@@ -145,7 +146,7 @@ Progress is stored with browser `localStorage`, so children can leave and contin
 <tr>
 <td width="42%">
 
-<img src="docs/readme/ipad-atom.png" alt="Bubble Lab element table and Oxygen detail panel on an iPad-sized screen">
+<img src="docs/readme/ipad-atom.png" alt="Periodic Table for Kids element table and 3D Oxygen detail panel on an iPad-sized screen">
 
 </td>
 <td valign="top">
@@ -179,12 +180,12 @@ The first release targets ages **6–8**. Its content rules are intentionally st
 
 ## 🛠️ Project design
 
-Bubble Lab deliberately uses a tiny, dependable stack:
+Periodic Table for Kids deliberately uses a tiny, dependable stack:
 
 ```text
 periodictableforkids/
 ├── index.html                  # All three activity views
-├── styles.css                  # Responsive Bubble Lab visual system
+├── styles.css                  # Responsive visual and crafting system
 ├── js/
 │   ├── app.js                  # Interactions, narration, recipes, rewards
 │   └── elements.js             # 118 elements and electron-shell counts
@@ -197,7 +198,8 @@ periodictableforkids/
 ```
 
 - **Zero runtime dependencies**—plain HTML, CSS, and JavaScript
-- **Web Speech API** for spoken explanations
+- **Web Speech API** with natural/premium device-voice preference
+- **Canvas 2D projection** for dependency-free draggable 3D atoms
 - **Web Audio API** for soft interaction sounds
 - **Local storage** for private, device-only progress
 - **GitHub Actions** for automatic GitHub Pages publishing
@@ -222,11 +224,11 @@ Every shipped version is recorded in four places:
 - The [`CHANGELOG.md`](CHANGELOG.md)
 - A matching Git tag and GitHub Release
 
-Pushing `main` runs the test workflow and publishes the site through GitHub Pages. The current release is **v0.1.0**.
+Pushing `main` runs the test workflow and publishes the site through GitHub Pages. The current release is **v0.2.0**.
 
 ## 📚 Data and science note
 
-Periodic-table positions and electron-shell counts were derived from [Bowserinator/Periodic-Table-JSON](https://github.com/Bowserinator/Periodic-Table-JSON), released under CC0-1.0. All child-facing descriptions and everyday examples were written specifically for Bubble Lab.
+Periodic-table positions and electron-shell counts were derived from [Bowserinator/Periodic-Table-JSON](https://github.com/Bowserinator/Periodic-Table-JSON), released under CC0-1.0. All child-facing descriptions and everyday examples were written specifically for Periodic Table for Kids.
 
 ---
 
@@ -234,7 +236,7 @@ Periodic-table positions and electron-shell counts were derived from [Bowserinat
 
 ### ✨ The whole world is made of tiny building blocks. Let’s meet them!
 
-**[Play Bubble Lab →](https://regenerous.github.io/periodictableforkids/)**
+**[Play Periodic Table for Kids →](https://regenerous.github.io/periodictableforkids/)**
 
 Made for curious kids and their grown-ups.
 

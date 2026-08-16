@@ -1,21 +1,21 @@
 (() => {
   "use strict";
 
-  const VERSION = "0.1.0";
+  const VERSION = "0.2.0";
   const STORAGE_KEY = "bubble-lab-progress-v1";
   const ELEMENTS = window.ELEMENT_DATA;
 
   const CATEGORY_INFO = {
-    alkali: { label: "Bouncy metals", color: "var(--alkali)" },
-    alkaline: { label: "Earthy metals", color: "var(--alkaline)" },
-    transition: { label: "Strong metals", color: "var(--transition)" },
-    post: { label: "Soft metals", color: "var(--post)" },
-    metalloid: { label: "In-between", color: "var(--metalloid)" },
-    reactive: { label: "Busy nonmetals", color: "var(--reactive)" },
-    noble: { label: "Calm gases", color: "var(--noble)" },
-    lanthanide: { label: "Shiny rare metals", color: "var(--lanthanide)" },
-    actinide: { label: "Heavy metals", color: "var(--actinide)" },
-    unknown: { label: "Mystery elements", color: "var(--unknown)" }
+    alkali: { label: "Bouncy metals", color: "var(--alkali)", description:"Very soft metals that love to join other atoms. Keep them away from water!" },
+    alkaline: { label: "Earthy metals", color: "var(--alkaline)", description:"Light metals often found inside rocks, soil, bones, and shells." },
+    transition: { label: "Strong metals", color: "var(--transition)", description:"Strong, shiny metals used for tools, wires, coins, buildings, and machines." },
+    post: { label: "Soft metals", color: "var(--post)", description:"Metals that are usually softer and melt more easily than the strong metals." },
+    metalloid: { label: "In-between", color: "var(--metalloid)", description:"These act partly like metals and partly like nonmetals. Many help computers work." },
+    reactive: { label: "Busy nonmetals", color: "var(--reactive)", description:"Busy atoms that often team up with other atoms to make new things." },
+    noble: { label: "Calm gases", color: "var(--noble)", description:"Quiet gases that almost always float around alone instead of joining a team." },
+    lanthanide: { label: "Shiny rare metals", color: "var(--lanthanide)", description:"Shiny metals that help make bright screens, lasers, and powerful magnets." },
+    actinide: { label: "Heavy metals", color: "var(--actinide)", description:"Very heavy atoms. Many give off energy and need special care from scientists." },
+    unknown: { label: "Mystery elements", color: "var(--unknown)", description:"Super-rare lab-made atoms that scientists are still trying to understand." }
   };
 
   const ELEMENT_ITEMS = {
@@ -110,6 +110,19 @@
     { id:"rust", name:"Rust", formula:"Fe₂O₃", atoms:{Fe:2,O:3}, icon:"🔩", fact:"When iron meets oxygen and water, reddish rust can form." }
   ];
 
+  const RECIPE_CLUES = {
+    "water":"Fill the table with two H atoms and one O atom.",
+    "oxygen-pair":"Oxygen likes a buddy. Put two O atoms together.",
+    "hydrogen-pair":"The lightest gas travels as a pair of H atoms.",
+    "nitrogen-pair":"Most air is made from two N atoms holding together.",
+    "carbon-dioxide":"One C atom needs two O partners.",
+    "methane":"Put one C atom in the middle of four H atoms.",
+    "ammonia":"One N atom teams up with three H atoms.",
+    "table-salt":"Match one Na atom with one Cl atom.",
+    "silica":"One Si atom needs two O atoms to help make sand.",
+    "rust":"Use two Fe atoms and three O atoms for a rusty team."
+  };
+
   const AWARDS = [
     {id:"first-element", icon:"🫧", name:"First Bubble", help:"Find 1 element", test:p=>p.elements.length>=1},
     {id:"ten-elements", icon:"🔟", name:"Element Scout", help:"Find 10 elements", test:p=>p.elements.length>=10},
@@ -121,10 +134,15 @@
   const state = {
     view:"table",
     selectedElement: ELEMENTS.find(element => element.symbol === "O"),
+    activeCategory:null,
+    activeRecipeId:"water",
     mix:[],
     sound:true,
     progress:loadProgress()
   };
+
+  let atom3DController = null;
+  let preferredVoice = null;
 
   function loadProgress() {
     try {
@@ -160,6 +178,12 @@
   }
   RECIPE_SPECS.forEach(recipe => { recipe.key = makeRecipeKey(recipe.atoms); });
 
+  function activeRecipe() { return RECIPE_SPECS.find(recipe => recipe.id === state.activeRecipeId) || RECIPE_SPECS[0]; }
+  function recipesForElement(symbol) { return RECIPE_SPECS.filter(recipe => Object.hasOwn(recipe.atoms, symbol)); }
+  function partnerSymbolsFor(symbol) {
+    return [...new Set(recipesForElement(symbol).flatMap(recipe => Object.keys(recipe.atoms)).filter(partner => partner !== symbol))];
+  }
+
   function friendlyFact(element) {
     if (SPECIAL_FACTS[element.symbol]) return SPECIAL_FACTS[element.symbol];
     if (element.number >= 104) return "Scientists made this element in a lab. Only a few atoms have ever existed.";
@@ -184,7 +208,15 @@
 
   function renderLegend() {
     const legend = document.querySelector("#legend");
-    legend.innerHTML = Object.entries(CATEGORY_INFO).map(([key,info]) => `<span class="legend-item"><i style="background:${info.color}"></i>${info.label}</span>`).join("");
+    legend.innerHTML = `<button class="legend-item legend-clear" type="button" data-category="all" data-tip="Show every color cousin together." aria-pressed="${state.activeCategory === null}"><i style="background:linear-gradient(135deg,var(--alkali),var(--reactive),var(--noble))"></i>All colors</button>${Object.entries(CATEGORY_INFO).map(([key,info]) => `<button class="legend-item" type="button" data-category="${key}" data-tip="${escapeHtml(info.description)}" aria-label="${escapeHtml(info.label)}. ${escapeHtml(info.description)}" aria-pressed="${state.activeCategory === key}" style="--legend-color:${info.color}"><i style="background:${info.color}"></i>${info.label}</button>`).join("")}`;
+    legend.querySelectorAll("button").forEach(button => button.addEventListener("click", () => {
+      const category = button.dataset.category;
+      state.activeCategory = category === "all" || state.activeCategory === category ? null : category;
+      renderLegend();
+      renderPeriodicTable();
+      playTone(state.activeCategory ? 460 : 340, .06);
+      showToast(state.activeCategory ? `Showing ${CATEGORY_INFO[state.activeCategory].label}` : "Showing every color cousin");
+    }));
   }
 
   function renderPeriodicTable() {
@@ -200,43 +232,200 @@
     bridgeTwo.textContent = "89–103 ↓";
     table.append(bridgeOne, bridgeTwo);
 
+    const partnerSymbols = partnerSymbolsFor(state.selectedElement.symbol);
     ELEMENTS.forEach(element => {
       const button = document.createElement("button");
       const found = state.progress.elements.includes(element.number);
       const selected = state.selectedElement.number === element.number;
       button.type = "button";
-      button.className = `element-tile${element.ypos > 7 ? " series-tile" : ""}${found ? " is-found" : ""}${selected ? " is-selected" : ""}`;
+      const filteredOut = state.activeCategory && categoryKey(element) !== state.activeCategory;
+      const recipePartner = partnerSymbols.includes(element.symbol);
+      button.className = `element-tile${element.ypos > 7 ? " series-tile" : ""}${found ? " is-found" : ""}${selected ? " is-selected" : ""}${filteredOut ? " is-filtered-out" : ""}${recipePartner ? " is-recipe-partner" : ""}`;
       button.style.gridColumn = element.xpos;
       button.style.gridRow = element.ypos;
       button.style.setProperty("--tile-color", elementColor(element));
       button.dataset.number = element.number;
-      button.setAttribute("aria-label", `${element.name}, element ${element.number}${found ? ", sticker found" : ""}`);
+      button.setAttribute("aria-label", `${element.name}, element ${element.number}${recipePartner ? `, can craft with ${state.selectedElement.name}` : ""}${found ? ", sticker found" : ""}`);
       if (selected) button.setAttribute("aria-pressed", "true");
       button.innerHTML = `<span class="number">${element.number}</span><span class="symbol">${escapeHtml(element.symbol)}</span><span class="name">${escapeHtml(element.name)}</span>`;
       button.addEventListener("click", () => selectElement(element, true));
       table.append(button);
     });
+    const partnerNames = partnerSymbols.map(symbol => elementBySymbol(symbol).name);
+    document.querySelector("#tableRecipeHint").innerHTML = partnerNames.length
+      ? `<span aria-hidden="true">🧩</span><span><strong>${escapeHtml(state.selectedElement.name)} crafting clue:</strong> puzzle-marked tiles ${partnerNames.length === 1 ? "are" : "include"} ${partnerNames.map(escapeHtml).join(", ")}.</span>`
+      : `<span aria-hidden="true">🔬</span><span><strong>${escapeHtml(state.selectedElement.name)}</strong> has no crafting recipes in this first clue set yet.</span>`;
   }
 
-  function atomMarkup(element) {
-    const shellCount = element.shells.length;
-    return element.shells.map((electronCount, shellIndex) => {
-      const size = 80 + shellIndex * (shellCount > 5 ? 31 : 38);
-      const speed = Math.max(5.2, 14 - shellIndex * 1.15);
-      const dots = Array.from({length:electronCount}, (_,electronIndex) => {
-        const angle = (360 / electronCount) * electronIndex;
-        const dotSize = electronCount > 18 ? 6 : electronCount > 8 ? 7 : 9;
-        return `<i class="electron" style="--angle:${angle}deg;--negative-angle:${-angle}deg;--electron-size:${dotSize}px"></i>`;
-      }).join("");
-      return `<div class="electron-shell" style="--shell-size:${size}px;--speed:${speed}s;animation-direction:${shellIndex % 2 ? "reverse" : "normal"}">${dots}</div>`;
-    }).join("");
+  class Atom3D {
+    constructor(canvas, element) {
+      this.canvas = canvas;
+      this.element = element;
+      this.yaw = -.35;
+      this.pitch = -.28;
+      this.panX = 0;
+      this.panY = 0;
+      this.zoom = 1;
+      this.tool = "spin";
+      this.pointer = null;
+      this.startTime = performance.now();
+      this.reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      try { this.context = canvas.getContext("2d"); } catch (_) { this.context = null; }
+      if (!this.context) return;
+      this.bind();
+      this.resize();
+      if (typeof ResizeObserver === "function") {
+        this.observer = new ResizeObserver(() => this.resize());
+        this.observer.observe(canvas);
+      }
+      if (this.reducedMotion) this.draw(performance.now()); else this.frame = requestAnimationFrame(time => this.animate(time));
+    }
+
+    bind() {
+      this.onPointerDown = event => {
+        this.pointer = { id:event.pointerId, x:event.clientX, y:event.clientY };
+        this.canvas.setPointerCapture?.(event.pointerId);
+      };
+      this.onPointerMove = event => {
+        if (!this.pointer || this.pointer.id !== event.pointerId) return;
+        const dx = event.clientX - this.pointer.x;
+        const dy = event.clientY - this.pointer.y;
+        this.pointer.x = event.clientX;
+        this.pointer.y = event.clientY;
+        if (this.tool === "move") {
+          this.panX = Math.max(-90, Math.min(90, this.panX + dx));
+          this.panY = Math.max(-70, Math.min(70, this.panY + dy));
+        } else {
+          this.yaw += dx * .012;
+          this.pitch = Math.max(-1.35, Math.min(1.35, this.pitch + dy * .012));
+        }
+        if (this.reducedMotion) this.draw(performance.now());
+      };
+      this.onPointerUp = event => {
+        if (this.pointer?.id === event.pointerId) this.pointer = null;
+      };
+      this.onWheel = event => {
+        event.preventDefault();
+        this.setZoom(this.zoom + (event.deltaY < 0 ? .1 : -.1));
+      };
+      this.canvas.addEventListener("pointerdown", this.onPointerDown);
+      this.canvas.addEventListener("pointermove", this.onPointerMove);
+      this.canvas.addEventListener("pointerup", this.onPointerUp);
+      this.canvas.addEventListener("pointercancel", this.onPointerUp);
+      this.canvas.addEventListener("wheel", this.onWheel, {passive:false});
+    }
+
+    resize() {
+      if (!this.context) return;
+      const bounds = this.canvas.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      this.width = Math.max(260, bounds.width || 320);
+      this.height = Math.max(250, bounds.height || 300);
+      this.canvas.width = Math.round(this.width * ratio);
+      this.canvas.height = Math.round(this.height * ratio);
+      this.context.setTransform(ratio,0,0,ratio,0,0);
+      this.draw(performance.now());
+    }
+
+    setTool(tool) { this.tool = tool; }
+    setZoom(value) {
+      this.zoom = Math.max(.62, Math.min(1.65, value));
+      if (this.reducedMotion) this.draw(performance.now());
+    }
+    reset() {
+      this.yaw = -.35; this.pitch = -.28; this.panX = 0; this.panY = 0; this.zoom = 1;
+      if (this.reducedMotion) this.draw(performance.now());
+    }
+
+    rotate(point) {
+      const cy = Math.cos(this.yaw), sy = Math.sin(this.yaw);
+      const cp = Math.cos(this.pitch), sp = Math.sin(this.pitch);
+      const x1 = point.x * cy + point.z * sy;
+      const z1 = -point.x * sy + point.z * cy;
+      return { x:x1, y:point.y * cp - z1 * sp, z:point.y * sp + z1 * cp };
+    }
+
+    orbitPoint(radius, angle, shellIndex) {
+      const tiltX = .44 + (shellIndex % 3) * .34;
+      const tiltZ = -.62 + (shellIndex % 4) * .38;
+      const x = radius * Math.cos(angle);
+      const y = radius * Math.sin(angle);
+      const y1 = y * Math.cos(tiltX);
+      const z1 = y * Math.sin(tiltX);
+      return this.rotate({x:x*Math.cos(tiltZ)-y1*Math.sin(tiltZ), y:x*Math.sin(tiltZ)+y1*Math.cos(tiltZ), z:z1});
+    }
+
+    project(point) {
+      const scale = Math.min(this.width, this.height) * .42 * this.zoom;
+      const perspective = 1 / (1.45 - point.z * .28);
+      return { x:this.width/2 + this.panX + point.x*scale*perspective, y:this.height/2 + this.panY + point.y*scale*perspective, z:point.z, perspective };
+    }
+
+    drawSphere(x,y,radius,inner,outer,label="") {
+      const ctx = this.context;
+      const gradient = ctx.createRadialGradient(x-radius*.35,y-radius*.4,radius*.1,x,y,radius);
+      gradient.addColorStop(0,"#ffffff"); gradient.addColorStop(.2,inner); gradient.addColorStop(1,outer);
+      ctx.beginPath(); ctx.arc(x,y,radius,0,Math.PI*2); ctx.fillStyle=gradient; ctx.fill();
+      ctx.strokeStyle="rgba(255,255,255,.86)"; ctx.lineWidth=Math.max(1.5,radius*.12); ctx.stroke();
+      if (label) { ctx.fillStyle="#402343"; ctx.font=`900 ${Math.max(9,radius*.34)}px Nunito, Arial`; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(label,x,y+1); }
+    }
+
+    draw(time) {
+      if (!this.context) return;
+      const ctx = this.context;
+      ctx.clearRect(0,0,this.width,this.height);
+      const seconds = this.reducedMotion ? 0 : (time-this.startTime)/1000;
+      const shellTotal = this.element.shells.length;
+      const particles = [];
+
+      this.element.shells.forEach((count,shellIndex) => {
+        const radius = .26 + shellIndex * (.68/Math.max(1,shellTotal-1));
+        ctx.beginPath();
+        for (let step=0; step<=72; step+=1) {
+          const point = this.project(this.orbitPoint(radius,step/72*Math.PI*2,shellIndex));
+          if (step===0) ctx.moveTo(point.x,point.y); else ctx.lineTo(point.x,point.y);
+        }
+        ctx.strokeStyle=`rgba(226,241,255,${Math.max(.13,.34-shellIndex*.025)})`;
+        ctx.lineWidth=1.7; ctx.stroke();
+
+        for (let electronIndex=0; electronIndex<count; electronIndex+=1) {
+          const direction = shellIndex%2 ? -1 : 1;
+          const angle = electronIndex/count*Math.PI*2 + seconds*(.48+shellIndex*.07)*direction;
+          const point = this.project(this.orbitPoint(radius,angle,shellIndex));
+          particles.push({...point,type:"electron",size:Math.max(3.5,7.4-shellIndex*.48),label:count<=8 ? "−" : ""});
+        }
+      });
+
+      const nucleus = this.project(this.rotate({x:0,y:0,z:0}));
+      particles.push({...nucleus,type:"nucleus",size:Math.max(28,48-shellTotal*2.4),label:this.element.symbol});
+      particles.sort((a,b)=>a.z-b.z).forEach(particle => {
+        const size = particle.size * Math.max(.72,particle.perspective);
+        if (particle.type === "nucleus") this.drawSphere(particle.x,particle.y,size,"#ffe983","#f25f91",particle.label);
+        else this.drawSphere(particle.x,particle.y,size,"#bdf8ff","#32c7ee",particle.label);
+      });
+    }
+
+    animate(time) { this.draw(time); this.frame = requestAnimationFrame(next => this.animate(next)); }
+    destroy() {
+      if (!this.context) return;
+      cancelAnimationFrame(this.frame);
+      this.observer?.disconnect();
+      this.canvas.removeEventListener("pointerdown",this.onPointerDown);
+      this.canvas.removeEventListener("pointermove",this.onPointerMove);
+      this.canvas.removeEventListener("pointerup",this.onPointerUp);
+      this.canvas.removeEventListener("pointercancel",this.onPointerUp);
+      this.canvas.removeEventListener("wheel",this.onWheel);
+    }
   }
 
   function renderElementDetail() {
+    atom3DController?.destroy();
     const element = state.selectedElement;
     const category = CATEGORY_INFO[categoryKey(element)];
     const items = ELEMENT_ITEMS[element.symbol] || [["🧫","Tiny samples"],["⚛️","Atom science"],["🔬","Research"]];
     const found = state.progress.elements.includes(element.number);
+    const elementRecipes = recipesForElement(element.symbol);
+    const partnerNames = partnerSymbolsFor(element.symbol).map(symbol => elementBySymbol(symbol).name);
     const detail = document.querySelector("#elementDetail");
     detail.innerHTML = `
       <div class="detail-header">
@@ -245,22 +434,38 @@
         <button class="speak-element" type="button" aria-label="Hear about ${escapeHtml(element.name)}">🔊</button>
       </div>
       <p class="detail-intro">${escapeHtml(friendlyFact(element))}</p>
-      <div class="atom-heading"><strong>Touch the atom!</strong><span>Tap the middle to make it zoom</span></div>
-      <div class="atom-stage" aria-label="Playful model of ${escapeHtml(element.name)} with ${element.number} moving electrons">
-        <div class="atom-glow"></div>${atomMarkup(element)}
-        <button class="nucleus" type="button" aria-label="Make the electrons spin faster">tap me</button>
+      <div class="atom-heading"><strong>Explore the atom in 3D!</strong><span>Spin, move, and zoom</span></div>
+      <div class="atom-stage">
+        <canvas class="atom-canvas" role="img" aria-label="Rotatable 3D model of ${escapeHtml(element.name)} with ${element.number} moving electrons"></canvas>
+        <span class="atom-drag-hint">☝️ Drag the model</span>
+        <div class="atom-tools" aria-label="3D atom controls">
+          <button class="atom-tool" type="button" data-atom-tool="spin" aria-pressed="true">↻ Spin</button>
+          <button class="atom-tool" type="button" data-atom-tool="move" aria-pressed="false">✥ Move</button>
+          <button class="atom-tool icon-only" type="button" data-atom-action="zoom-out" aria-label="Zoom out">−</button>
+          <button class="atom-tool icon-only" type="button" data-atom-action="zoom-in" aria-label="Zoom in">+</button>
+          <button class="atom-tool icon-only" type="button" data-atom-action="reset" aria-label="Reset atom view">⌂</button>
+        </div>
       </div>
       <div class="electron-count"><b>${element.number}</b><span><strong>${element.number} electron${element.number === 1 ? "" : "s"}</strong><br>Tiny dots that zoom around the middle.</span></div>
+      ${elementRecipes.length ? `<div class="recipe-partners"><strong>🧩 Crafting clue</strong><p>${escapeHtml(element.name)} can team with ${escapeHtml(partnerNames.join(", ") || "another atom of the same kind")} in ${elementRecipes.length} recipe${elementRecipes.length===1?"":"s"}.</p><button class="craft-from-element" type="button" data-recipe="${elementRecipes[0].id}">Craft ${escapeHtml(elementRecipes[0].name)} →</button></div>` : ""}
       <h3 class="uses-heading">You can find it in...</h3>
       <div class="item-cards">${items.map(([icon,label],index)=>`<div class="item-card"><span class="item-illustration" style="--item-bg:${["#dff5ff","#e3f8dd","#ffe1e9"][index%3]}">${icon}</span><b>${escapeHtml(label)}</b></div>`).join("")}</div>
       <div class="sticker-earned"><span aria-hidden="true">${found ? "⭐" : "👆"}</span>${found ? `${escapeHtml(element.name)} sticker found!` : "Tap this element in the table to earn its sticker."}</div>`;
 
     detail.querySelector(".speak-element").addEventListener("click", () => speakElement(element));
-    const stage = detail.querySelector(".atom-stage");
-    detail.querySelector(".nucleus").addEventListener("click", () => {
-      stage.classList.add("is-zooming");
-      playTone(520, .08);
-      window.setTimeout(() => stage.classList.remove("is-zooming"), 1200);
+    atom3DController = new Atom3D(detail.querySelector(".atom-canvas"),element);
+    detail.querySelectorAll("[data-atom-tool]").forEach(button => button.addEventListener("click", () => {
+      detail.querySelectorAll("[data-atom-tool]").forEach(tool => tool.setAttribute("aria-pressed",String(tool===button)));
+      atom3DController?.setTool(button.dataset.atomTool);
+      playTone(button.dataset.atomTool === "spin" ? 480 : 390,.05);
+    }));
+    detail.querySelector('[data-atom-action="zoom-out"]').addEventListener("click",()=>atom3DController?.setZoom(atom3DController.zoom-.15));
+    detail.querySelector('[data-atom-action="zoom-in"]').addEventListener("click",()=>atom3DController?.setZoom(atom3DController.zoom+.15));
+    detail.querySelector('[data-atom-action="reset"]').addEventListener("click",()=>atom3DController?.reset());
+    detail.querySelector(".craft-from-element")?.addEventListener("click", event => {
+      selectRecipe(event.currentTarget.dataset.recipe);
+      switchView("maker");
+      window.setTimeout(()=>document.querySelector("#recipeGuide").scrollIntoView({behavior:"smooth",block:"center"}),100);
     });
   }
 
@@ -287,19 +492,50 @@
     speak(`${element.name}. ${friendlyFact(element)} It has ${element.number} electron${element.number === 1 ? "" : "s"}.`);
   }
 
+  function renderRecipeGuide() {
+    const guide = document.querySelector("#recipeGuide");
+    guide.innerHTML = RECIPE_SPECS.map(recipe => {
+      const selected = recipe.id === state.activeRecipeId;
+      const found = state.progress.recipes.includes(recipe.id);
+      return `<button class="recipe-card${found ? " is-found" : ""}" type="button" data-recipe="${recipe.id}" aria-pressed="${selected}" aria-label="Crafting clue for ${escapeHtml(recipe.name)}. ${escapeHtml(RECIPE_CLUES[recipe.id])}"><span class="recipe-card-icon" aria-hidden="true">${recipe.icon}</span><span><b>${escapeHtml(recipe.name)}</b><small>${recipe.formula}</small></span><span class="recipe-clue">${escapeHtml(RECIPE_CLUES[recipe.id])}</span></button>`;
+    }).join("");
+    guide.querySelectorAll("button").forEach(button => button.addEventListener("click",()=>selectRecipe(button.dataset.recipe)));
+  }
+
+  function selectRecipe(recipeId) {
+    state.activeRecipeId = recipeId;
+    state.mix = [];
+    document.querySelector("#discoveryResult").hidden = true;
+    renderRecipeGuide();
+    renderPantry();
+    renderMixer();
+    const recipe = activeRecipe();
+    showToast(`${recipe.icon} Crafting clue: ${recipe.name}`);
+    speak(`Let us craft ${recipe.name}. ${RECIPE_CLUES[recipe.id]}`);
+  }
+
   function renderPantry() {
     const pantry = document.querySelector("#atomPantry");
+    const neededSymbols = Object.keys(activeRecipe().atoms);
     pantry.innerHTML = PANTRY_SYMBOLS.map(symbol => {
       const element = elementBySymbol(symbol);
-      return `<button class="pantry-atom" type="button" data-symbol="${symbol}" style="--tile-color:${elementColor(element)}" aria-label="Add ${element.name} atom"><b>${symbol}</b><span>${element.name}</span></button>`;
+      const needed = neededSymbols.includes(symbol);
+      return `<button class="pantry-atom${needed ? " is-needed" : " is-not-needed"}" type="button" data-symbol="${symbol}" style="--tile-color:${elementColor(element)}" aria-label="${needed ? "Add" : "Not needed for this clue:"} ${element.name} atom"><b>${symbol}</b><span>${element.name}</span></button>`;
     }).join("");
     pantry.querySelectorAll("button").forEach(button => button.addEventListener("click", () => addAtom(button.dataset.symbol)));
   }
 
   function addAtom(symbol) {
-    if (state.mix.length >= 8) {
-      showToast("The mixer can hold 8 atoms. Try a recipe now!");
+    const recipe = activeRecipe();
+    if (!Object.hasOwn(recipe.atoms,symbol)) {
+      showToast(`${elementBySymbol(symbol).name} is not part of this clue.`);
       playTone(180, .1);
+      return;
+    }
+    const currentCount = state.mix.filter(item=>item===symbol).length;
+    if (currentCount >= recipe.atoms[symbol]) {
+      showToast(`${elementBySymbol(symbol).name} meter is already full!`);
+      playTone(250,.07);
       return;
     }
     state.mix.push(symbol);
@@ -309,20 +545,36 @@
 
   function renderMixer() {
     const bowl = document.querySelector("#mixingBowl");
-    if (!state.mix.length) {
-      bowl.innerHTML = `<div class="empty-mixer"><span aria-hidden="true">🫧</span><b>Atoms go here</b></div>`;
-      document.querySelector("#mixerHelp").textContent = "Your mixer is empty. Pick an atom!";
-    } else {
-      bowl.innerHTML = state.mix.map((symbol,index) => {
+    const recipe = activeRecipe();
+    const slots = Array.from({length:9},(_,index) => {
+      const symbol = state.mix[index];
+      if (symbol) {
         const element = elementBySymbol(symbol);
-        return `<span class="mix-atom" style="--tile-color:${elementColor(element)};animation-delay:${index*.04}s" title="${element.name}">${symbol}</span>`;
-      }).join("");
-      document.querySelector("#mixerHelp").textContent = `${state.mix.length} atom${state.mix.length === 1 ? "" : "s"} in your team.`;
-    }
+        return `<div class="craft-slot is-filled"><span class="craft-slot-number">${index+1}</span><span class="mix-atom" style="--tile-color:${elementColor(element)};animation-delay:${index*.04}s" title="${element.name}">${symbol}</span></div>`;
+      }
+      return `<div class="craft-slot"><span class="craft-slot-number">${index+1}</span></div>`;
+    }).join("");
+    bowl.innerHTML = `${slots}${state.mix.length ? "" : `<div class="empty-mixer"><span aria-hidden="true">🧩</span><b>Fill the meters!</b></div>`}`;
+    const ready = currentMixKey() === recipe.key;
+    bowl.classList.toggle("is-ready",ready);
+    document.querySelector("#mixerHelp").textContent = ready ? "Every meter is full—your atom team is ready!" : `${state.mix.length} of ${Object.values(recipe.atoms).reduce((sum,count)=>sum+count,0)} atoms placed.`;
+    renderCraftProgress();
     const disabled = state.mix.length === 0;
     document.querySelector("#undoAtom").disabled = disabled;
     document.querySelector("#clearMixer").disabled = disabled;
-    document.querySelector("#discoverMix").disabled = disabled;
+    document.querySelector("#discoverMix").disabled = !ready;
+  }
+
+  function renderCraftProgress() {
+    const recipe = activeRecipe();
+    const counts = state.mix.reduce((all,symbol)=>{all[symbol]=(all[symbol]||0)+1;return all;},{});
+    const ready = currentMixKey() === recipe.key;
+    const progress = document.querySelector("#craftProgress");
+    progress.innerHTML = `${Object.entries(recipe.atoms).map(([symbol,needed]) => {
+      const have = counts[symbol] || 0;
+      const element = elementBySymbol(symbol);
+      return `<div class="ingredient-meter${have>=needed ? " is-complete" : ""}"><div class="ingredient-meter-top"><span>${symbol} · ${escapeHtml(element.name)}</span><span>${have} / ${needed}${have>=needed ? " · FULL!" : ""}</span></div><div class="ingredient-meter-track" role="progressbar" aria-label="${escapeHtml(element.name)} atoms" aria-valuemin="0" aria-valuemax="${needed}" aria-valuenow="${have}"><div class="ingredient-meter-fill" style="--progress:${Math.min(100,have/needed*100)}%;--meter-color:${elementColor(element)}"></div></div></div>`;
+    }).join("")}<div class="craft-status${ready ? " is-ready" : ""}">${ready ? `✨ ${recipe.name} is ready to craft!` : `Fill every meter to unlock ${recipe.name}.`}</div>`;
   }
 
   function currentMixKey() {
@@ -332,15 +584,15 @@
 
   function discoverMix() {
     const result = document.querySelector("#discoveryResult");
-    const recipe = RECIPE_SPECS.find(item => item.key === currentMixKey());
+    const recipe = activeRecipe();
     result.hidden = false;
-    if (!recipe) {
-      result.innerHTML = `<div class="result-no-match"><span aria-hidden="true">🤔</span><div><h2>That team is a mystery!</h2><p>Those atoms do not match one of our recipes yet. Try changing the number of each atom.</p><button class="try-again" type="button">Keep mixing</button></div></div>`;
+    if (recipe.key !== currentMixKey()) {
+      result.innerHTML = `<div class="result-no-match"><span aria-hidden="true">🧩</span><div><h2>Fill every meter first!</h2><p>The crafting clue shows the exact number of atoms this team needs.</p><button class="try-again" type="button">Keep crafting</button></div></div>`;
       result.querySelector("button").addEventListener("click", () => {
         result.hidden = true;
         document.querySelector("#atomPantry").scrollIntoView({behavior:"smooth",block:"center"});
       });
-      speak("That team is a mystery. Try changing the number of each atom.");
+      speak("Fill every meter first. The clue shows exactly how many atoms you need.");
       playTone(175, .16);
     } else {
       const isNew = !state.progress.recipes.includes(recipe.id);
@@ -365,7 +617,7 @@
     state.mix = [];
     renderMixer();
     document.querySelector("#discoveryResult").hidden = true;
-    document.querySelector("#atomPantry").scrollIntoView({behavior:"smooth",block:"center"});
+    document.querySelector("#recipeGuide").scrollIntoView({behavior:"smooth",block:"center"});
   }
 
   function renderCollection() {
@@ -422,11 +674,21 @@
     if (!state.sound || !("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
     const message = new SpeechSynthesisUtterance(text);
-    message.rate = .88;
-    message.pitch = 1.16;
-    const voices = window.speechSynthesis.getVoices();
-    message.voice = voices.find(voice => voice.lang.startsWith("en") && /Samantha|Google US English|Zira|Jenny|Natural/i.test(voice.name)) || voices.find(voice=>voice.lang.startsWith("en")) || null;
+    message.rate = .92;
+    message.pitch = 1.03;
+    message.volume = 1;
+    message.voice = preferredVoice;
     window.speechSynthesis.speak(message);
+  }
+
+  function refreshPreferredVoice() {
+    if (!("speechSynthesis" in window)) return;
+    const voices = window.speechSynthesis.getVoices().filter(voice => /^en[-_]/i.test(voice.lang));
+    const qualityWords = /natural|neural|premium|enhanced|ava|aria|jenny|samantha|allison|susan|daniel|aaron|google us english|microsoft.*online/i;
+    const robotWords = /compact|espeak|festival|robot/i;
+    preferredVoice = voices
+      .map(voice => ({voice,score:(voice.localService?3:0)+(qualityWords.test(voice.name)?12:0)-(robotWords.test(voice.name)?10:0)+(/en[-_]US/i.test(voice.lang)?2:0)}))
+      .sort((a,b)=>b.score-a.score)[0]?.voice || voices[0] || null;
   }
 
   let audioContext;
@@ -503,11 +765,14 @@
     renderLegend();
     renderPeriodicTable();
     renderElementDetail();
+    renderRecipeGuide();
     renderPantry();
     renderMixer();
     renderCollection();
     bindEvents();
     updateCounts();
+    refreshPreferredVoice();
+    if ("speechSynthesis" in window) window.speechSynthesis.addEventListener?.("voiceschanged",refreshPreferredVoice);
   }
 
   init();
