@@ -1,7 +1,24 @@
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const path = require("node:path");
 const { JSDOM, VirtualConsole } = require("jsdom");
 
 (async () => {
+  const projectRoot = path.join(__dirname, "..");
+  const styles = fs.readFileSync(path.join(projectRoot, "styles.css"), "utf8");
+  const version = fs.readFileSync(path.join(projectRoot, "VERSION"), "utf8").trim();
+  const packageMetadata = JSON.parse(fs.readFileSync(path.join(projectRoot, "package.json"), "utf8"));
+  const lockMetadata = JSON.parse(fs.readFileSync(path.join(projectRoot, "package-lock.json"), "utf8"));
+  const readme = fs.readFileSync(path.join(projectRoot, "README.md"), "utf8");
+  const changelog = fs.readFileSync(path.join(projectRoot, "CHANGELOG.md"), "utf8");
+  assert.equal(packageMetadata.version, version, "keeps the package version in sync with VERSION");
+  assert.equal(lockMetadata.version, version, "keeps the lockfile version in sync with VERSION");
+  assert.equal(lockMetadata.packages[""].version, version, "keeps the root lockfile package in sync with VERSION");
+  assert.match(readme, new RegExp(`release-v${version.replaceAll(".", "\\.")}`), "keeps the README badge in sync with VERSION");
+  assert.match(changelog, new RegExp(`## \\[${version.replaceAll(".", "\\.")}\\]`), "keeps the changelog in sync with VERSION");
+  assert.match(styles, /@media \(max-width: 1100px\)[\s\S]*?-webkit-backdrop-filter: none;[\s\S]*?backdrop-filter: none;/, "keeps fixed mobile navigation out of the header's blur containing block");
+  assert.match(styles, /@media \(orientation: landscape\) and \(max-width: 950px\) and \(max-height: 500px\)/, "includes a compact iPhone landscape layout");
+
   const virtualConsole = new VirtualConsole();
   const errors = [];
   virtualConsole.on("jsdomError", error => errors.push(error));
@@ -27,6 +44,7 @@ const { JSDOM, VirtualConsole } = require("jsdom");
 
   const { document, localStorage } = dom.window;
   assert.equal(document.title, "Periodic Table for Kids", "uses the new product name");
+  assert.match(document.querySelector("footer").textContent, new RegExp(`v${version.replaceAll(".", "\\.")}`), "keeps the in-app version in sync with VERSION");
   assert.equal(document.querySelectorAll(".element-tile").length, 118, "renders all 118 elements");
   assert.match(document.querySelector("#elementDetail").textContent, /Oxygen/, "starts with oxygen selected");
   assert.ok(document.querySelector(".atom-canvas"), "renders the interactive 3D atom canvas");

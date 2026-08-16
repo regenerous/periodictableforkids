@@ -752,6 +752,7 @@
     result.hidden=false;
     result.innerHTML=`<div class="result-inner"><div class="result-sticker" aria-hidden="true">${recipe.icon}</div><div class="result-copy"><span class="eyebrow">${isNew ? "New sticker discovered!" : "You found it again!"}</span><h2>${escapeHtml(recipe.name)}</h2><p>${escapeHtml(recipe.fact)}</p><button class="try-again" type="button">Make another team</button></div><div class="result-formula" aria-label="Formula ${recipe.formula}">${recipe.formula}</div></div>`;
     result.querySelector("button").addEventListener("click",startAnotherCraft);
+    window.setTimeout(() => result.scrollIntoView({behavior:"smooth",block:"center"}), 450);
     if (isNew) showToast(`🏆 ${recipe.name} sticker unlocked!`);
     burstConfetti(72);
     playSuccessTune();

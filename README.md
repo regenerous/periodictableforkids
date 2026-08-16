@@ -6,7 +6,7 @@
 
 ### A periodic table children can touch, hear, mix, and collect.
 
-[![Release](https://img.shields.io/badge/release-v0.3.0-5c65f2?style=for-the-badge&logo=github)](https://github.com/regenerous/periodictableforkids/releases/tag/v0.3.0)
+[![Release](https://img.shields.io/badge/release-v0.3.2-5c65f2?style=for-the-badge&logo=github)](https://github.com/regenerous/periodictableforkids/releases/tag/v0.3.2)
 [![GitHub Pages](https://img.shields.io/badge/play-online-65e0d1?style=for-the-badge&logo=githubpages&logoColor=1c2854)](https://regenerous.github.io/periodictableforkids/)
 [![Ages 6–8](https://img.shields.io/badge/ages-6–8-ffd65a?style=for-the-badge)](#-made-for-young-explorers)
 [![iPad Friendly](https://img.shields.io/badge/iPad-friendly-ff6e9e?style=for-the-badge&logo=apple&logoColor=white)](#-ipad-and-touch-friendly)
@@ -217,14 +217,16 @@ The smoke test verifies all 118 element tiles, activity navigation, every molecu
 
 ## 🚀 Releases and deployment
 
-Every shipped version is recorded in four places:
+Every project change includes a version uprev. The release number is kept in sync across:
 
 - The [`VERSION`](VERSION) file
+- The package and lockfile metadata
 - The in-app footer
+- The README release badge and current-release note
 - The [`CHANGELOG.md`](CHANGELOG.md)
 - A matching Git tag and GitHub Release
 
-Pushing `main` runs the test workflow and publishes the site through GitHub Pages. The current release is **v0.3.0**.
+Pushing `main` runs the test workflow and publishes the site through GitHub Pages. The current release is **v0.3.2**.
 
 ## 📚 Data and science note
 

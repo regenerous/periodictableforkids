@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.3.2] - 2026-08-16
+
+- Fixed the mobile activity navigation overlapping the site header on iPhone.
+- Kept scrolled-to element details below the sticky header and above the mobile navigation.
+- Added a compact, non-overlapping header and navigation layout for iPhone landscape.
+- Increased small zoom and crafting controls to 44-pixel touch targets.
+- Kept success messages, toasts, and confirmation dialogs clear of mobile browser chrome and navigation.
+- Added responsive regression checks for the mobile header and landscape layout.
+
+## [0.3.1] - 2026-08-16
+
+- Added responsive layouts for iPhone-sized screens down to 320 pixels wide.
+- Added iPhone safe-area spacing around the header, bottom navigation, content, and dialogs.
+- Prevented the fixed mobile navigation from covering page content.
+- Improved touch scrolling, tap targets, and compact layouts throughout the app.
+
 ## [0.3.0] - 2026-08-16
 
 - Simplified the 3D atom controls to spin, zoom, and reset.
