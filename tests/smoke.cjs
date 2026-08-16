@@ -6,6 +6,7 @@ const { JSDOM, VirtualConsole } = require("jsdom");
 (async () => {
   const projectRoot = path.join(__dirname, "..");
   const styles = fs.readFileSync(path.join(projectRoot, "styles.css"), "utf8");
+  const appSource = fs.readFileSync(path.join(projectRoot, "js", "app.js"), "utf8");
   const version = fs.readFileSync(path.join(projectRoot, "VERSION"), "utf8").trim();
   const packageMetadata = JSON.parse(fs.readFileSync(path.join(projectRoot, "package.json"), "utf8"));
   const lockMetadata = JSON.parse(fs.readFileSync(path.join(projectRoot, "package-lock.json"), "utf8"));
@@ -14,10 +15,12 @@ const { JSDOM, VirtualConsole } = require("jsdom");
   assert.equal(packageMetadata.version, version, "keeps the package version in sync with VERSION");
   assert.equal(lockMetadata.version, version, "keeps the lockfile version in sync with VERSION");
   assert.equal(lockMetadata.packages[""].version, version, "keeps the root lockfile package in sync with VERSION");
+  assert.match(appSource, new RegExp(`const VERSION = "${version.replaceAll(".", "\\.")}"`), "keeps the app version in sync with VERSION");
   assert.match(readme, new RegExp(`release-v${version.replaceAll(".", "\\.")}`), "keeps the README badge in sync with VERSION");
   assert.match(changelog, new RegExp(`## \\[${version.replaceAll(".", "\\.")}\\]`), "keeps the changelog in sync with VERSION");
   assert.match(styles, /@media \(max-width: 1100px\)[\s\S]*?-webkit-backdrop-filter: none;[\s\S]*?backdrop-filter: none;/, "keeps fixed mobile navigation out of the header's blur containing block");
   assert.match(styles, /@media \(orientation: landscape\) and \(max-width: 950px\) and \(max-height: 500px\)/, "includes a compact iPhone landscape layout");
+  assert.match(styles, /\.recipe-card small \{[^}]*font-size: 16px;/, "uses a clearly readable molecule formula size");
 
   const virtualConsole = new VirtualConsole();
   const errors = [];
@@ -30,6 +33,19 @@ const { JSDOM, VirtualConsole } = require("jsdom");
     pretendToBeVisual: true,
     virtualConsole,
     beforeParse(window) {
+      window.__spokenMessages = [];
+      window.SpeechSynthesisUtterance = function SpeechSynthesisUtterance(text) { this.text = text; };
+      Object.defineProperty(window, "speechSynthesis", { value: {
+        cancel() {},
+        speak(message) { window.__spokenMessages.push(message); },
+        getVoices() {
+          return [
+            {name:"Daniel Premium",lang:"en-GB",localService:true},
+            {name:"Samantha Enhanced",lang:"en-US",localService:true}
+          ];
+        },
+        addEventListener() {}
+      }});
       window.scrollTo = () => {};
       window.HTMLElement.prototype.scrollIntoView = () => {};
       window.HTMLCanvasElement.prototype.getContext = () => null;
@@ -45,14 +61,21 @@ const { JSDOM, VirtualConsole } = require("jsdom");
   const { document, localStorage } = dom.window;
   assert.equal(document.title, "Periodic Table for Kids", "uses the new product name");
   assert.match(document.querySelector("footer").textContent, new RegExp(`v${version.replaceAll(".", "\\.")}`), "keeps the in-app version in sync with VERSION");
+  assert.equal(document.documentElement.dataset.version, version, "publishes the current version in the page metadata");
   assert.equal(document.querySelectorAll(".element-tile").length, 118, "renders all 118 elements");
-  assert.match(document.querySelector("#elementDetail").textContent, /Oxygen/, "starts with oxygen selected");
+  assert.equal(document.querySelectorAll(".element-tile.is-selected").length, 0, "starts with no selected element");
+  assert.equal(document.querySelectorAll(".element-tile.is-recipe-partner").length, 0, "starts with no highlighted crafting partners");
+  assert.match(document.querySelector("#elementDetail").textContent, /Pick an element bubble/, "prompts for the first element selection");
+  document.querySelector('[data-number="8"]').click();
+  assert.match(document.querySelector("#elementDetail").textContent, /Oxygen/, "opens oxygen after it is selected");
+  assert.equal(document.querySelectorAll("#confetti .confetti-piece").length, 0, "does not launch confetti while exploring elements");
   assert.ok(document.querySelector(".atom-canvas"), "renders the interactive 3D atom canvas");
   assert.equal(document.querySelector('[data-atom-tool="move"]'), null, "does not offer atom move mode");
   assert.equal(document.querySelector(".atom-zoom-control").textContent.replace(/\s/g,""), "−+Zoom", "labels the plus and minus controls as Zoom");
   assert.match(document.querySelector(".atom-reset-control").textContent, /Reset/, "labels the home-view control as Reset");
   assert.ok(document.querySelector(".atom-reset-control svg"), "uses a home icon for reset");
   assert.ok(document.querySelectorAll(".element-tile.is-recipe-partner").length >= 4, "highlights Oxygen recipe partners");
+  assert.doesNotMatch(appSource, /count\s*<=\s*8\s*\?\s*["']−["']/, "does not hide minus signs on crowded electron shells");
 
   assert.equal(document.querySelector("#legend").hidden, false, "shows color cousins by default");
   assert.equal(document.querySelector('[data-category="post"]'), null, "omits the unused Soft metals filter");
@@ -62,9 +85,12 @@ const { JSDOM, VirtualConsole } = require("jsdom");
   nobleFilter.click();
   assert.ok(document.querySelectorAll(".element-tile.is-filtered-out").length > 100, "color filter spotlights one cousin group");
   assert.equal(document.querySelector('[data-category="noble"]').getAttribute("aria-pressed"), "true", "announces the active filter");
+  assert.match(document.querySelector("#legendDescription").textContent, /Calm gases.*float around alone/i, "shows a tapped color meaning without relying on hover");
 
   document.querySelector('[data-view-target="maker"]').click();
   assert.equal(document.querySelector("#makerView").hidden, false, "opens the molecule maker");
+  document.querySelector("#readLesson").click();
+  assert.equal(dom.window.__spokenMessages.at(-1).voice.name, "Samantha Enhanced", "prefers a female English narration voice");
   document.querySelector('[data-symbol="H"]').click();
   assert.equal(document.querySelector('[aria-label="Hydrogen atoms"]').getAttribute("aria-valuenow"), "1", "updates the crafting meter");
   document.querySelector('[data-symbol="H"]').click();

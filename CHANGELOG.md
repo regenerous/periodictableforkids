@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.3.4] - 2026-08-16
+
+- Enlarged crafting-clue molecule formulas so subscript numbers are easier to read.
+
+## [0.3.3] - 2026-08-16
+
+- Started the periodic table with no selected element or highlighted crafting partners.
+- Added a welcoming element-explorer prompt before the first element is chosen.
+- Enlarged molecule formulas in the crafting-clue cards.
+- Prioritized high-quality female English voices for narration.
+- Added a readable minus sign to every electron in every shell.
+- Added a persistent tapped-color explanation for Color Cousins on iPhone and iPad.
+- Removed the distracting confetti burst from element selection while keeping sticker feedback.
+
 ## [0.3.2] - 2026-08-16
 
 - Fixed the mobile activity navigation overlapping the site header on iPhone.

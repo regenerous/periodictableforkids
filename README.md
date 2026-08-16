@@ -6,7 +6,7 @@
 
 ### A periodic table children can touch, hear, mix, and collect.
 
-[![Release](https://img.shields.io/badge/release-v0.3.2-5c65f2?style=for-the-badge&logo=github)](https://github.com/regenerous/periodictableforkids/releases/tag/v0.3.2)
+[![Release](https://img.shields.io/badge/release-v0.3.4-5c65f2?style=for-the-badge&logo=github)](https://github.com/regenerous/periodictableforkids/releases/tag/v0.3.4)
 [![GitHub Pages](https://img.shields.io/badge/play-online-65e0d1?style=for-the-badge&logo=githubpages&logoColor=1c2854)](https://regenerous.github.io/periodictableforkids/)
 [![Ages 6–8](https://img.shields.io/badge/ages-6–8-ffd65a?style=for-the-badge)](#-made-for-young-explorers)
 [![iPad Friendly](https://img.shields.io/badge/iPad-friendly-ff6e9e?style=for-the-badge&logo=apple&logoColor=white)](#-ipad-and-touch-friendly)
@@ -226,7 +226,7 @@ Every project change includes a version uprev. The release number is kept in syn
 - The [`CHANGELOG.md`](CHANGELOG.md)
 - A matching Git tag and GitHub Release
 
-Pushing `main` runs the test workflow and publishes the site through GitHub Pages. The current release is **v0.3.2**.
+Pushing `main` runs the test workflow and publishes the site through GitHub Pages. The current release is **v0.3.4**.
 
 ## 📚 Data and science note
 

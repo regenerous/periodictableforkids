@@ -1,7 +1,7 @@
 (() => {
   "use strict";
 
-  const VERSION = "0.3.0";
+  const VERSION = "0.3.4";
   const STORAGE_KEY = "bubble-lab-progress-v1";
   const ELEMENTS = window.ELEMENT_DATA;
 
@@ -146,7 +146,7 @@
 
   const state = {
     view:"table",
-    selectedElement: ELEMENTS.find(element => element.symbol === "O"),
+    selectedElement:null,
     activeCategory:null,
     activeRecipeId:"water",
     mix:[],
@@ -236,6 +236,10 @@
       state.activeCategory = category === "all" || state.activeCategory === category ? null : category;
       renderLegend();
       renderPeriodicTable();
+      const description = category === "all"
+        ? {label:"All colors",description:"Show every color cousin together."}
+        : CATEGORY_INFO[category];
+      document.querySelector("#legendDescription").innerHTML = `<span aria-hidden="true">ℹ️</span><span><strong>${escapeHtml(description.label)}:</strong> ${escapeHtml(description.description)}</span>`;
       playTone(state.activeCategory ? 460 : 340, .06);
       showToast(state.activeCategory ? `Showing ${CATEGORY_INFO[state.activeCategory].label}` : "Showing every color cousin");
     }));
@@ -254,11 +258,11 @@
     bridgeTwo.textContent = "89–103 ↓";
     table.append(bridgeOne, bridgeTwo);
 
-    const partnerSymbols = partnerSymbolsFor(state.selectedElement.symbol);
+    const partnerSymbols = state.selectedElement ? partnerSymbolsFor(state.selectedElement.symbol) : [];
     ELEMENTS.forEach(element => {
       const button = document.createElement("button");
       const found = state.progress.elements.includes(element.number);
-      const selected = state.selectedElement.number === element.number;
+      const selected = state.selectedElement?.number === element.number;
       button.type = "button";
       const filteredOut = state.activeCategory && categoryKey(element) !== state.activeCategory;
       const recipePartner = partnerSymbols.includes(element.symbol);
@@ -273,8 +277,13 @@
       button.addEventListener("click", () => selectElement(element, true));
       table.append(button);
     });
+    const recipeHint = document.querySelector("#tableRecipeHint");
+    if (!state.selectedElement) {
+      recipeHint.innerHTML = `<span aria-hidden="true">👆</span><span><strong>Choose an element</strong> to see its crafting partners and explore its atom.</span>`;
+      return;
+    }
     const partnerNames = partnerSymbols.map(symbol => elementBySymbol(symbol).name);
-    document.querySelector("#tableRecipeHint").innerHTML = partnerNames.length
+    recipeHint.innerHTML = partnerNames.length
       ? `<span aria-hidden="true">🧩</span><span><strong>${escapeHtml(state.selectedElement.name)} crafting clue:</strong> puzzle-marked tiles ${partnerNames.length === 1 ? "are" : "include"} ${partnerNames.map(escapeHtml).join(", ")}.</span>`
       : `<span aria-hidden="true">🔬</span><span><strong>${escapeHtml(state.selectedElement.name)}</strong> has no crafting recipes in this first clue set yet.</span>`;
   }
@@ -380,7 +389,10 @@
       gradient.addColorStop(0,"#ffffff"); gradient.addColorStop(.2,inner); gradient.addColorStop(1,outer);
       ctx.beginPath(); ctx.arc(x,y,radius,0,Math.PI*2); ctx.fillStyle=gradient; ctx.fill();
       ctx.strokeStyle="rgba(255,255,255,.86)"; ctx.lineWidth=Math.max(1.5,radius*.12); ctx.stroke();
-      if (label) { ctx.fillStyle="#402343"; ctx.font=`900 ${Math.max(9,radius*.34)}px Nunito, Arial`; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(label,x,y+1); }
+      if (label) {
+        const labelSize = label === "−" ? Math.max(6,Math.min(9,radius*1.25)) : Math.max(9,radius*.34);
+        ctx.fillStyle="#402343"; ctx.font=`900 ${labelSize}px Nunito, Arial`; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(label,x,y+(label === "−" ? 0 : 1));
+      }
     }
 
     draw(time) {
@@ -407,7 +419,7 @@
           const direction = shellIndex%2 ? -1 : 1;
           const angle = electronIndex/count*Math.PI*2 + seconds*(.48+shellIndex*.07)*direction;
           const point = this.project(this.orbitPoint(radius,angle,shellIndex));
-          particles.push({...point,type:"electron",size:Math.max(3.5,7.4-shellIndex*.48),label:count<=8 ? "−" : ""});
+          particles.push({...point,type:"electron",size:Math.max(3.5,7.4-shellIndex*.48),label:"−"});
         }
       });
 
@@ -535,13 +547,22 @@
 
   function renderElementDetail() {
     atom3DController?.destroy();
+    atom3DController = null;
     const element = state.selectedElement;
+    const detail = document.querySelector("#elementDetail");
+    if (!element) {
+      detail.classList.add("is-empty");
+      detail.setAttribute("aria-label", "Element explorer. Choose an element from the table.");
+      detail.innerHTML = `<div class="detail-empty"><span class="detail-empty-icon" aria-hidden="true">⚛️</span><h2>Pick an element bubble</h2><p>Tap any element in the table to explore its atom, hear its story, and find out where it appears in our world.</p><span class="detail-empty-prompt"><span aria-hidden="true">👈</span> Choose any colorful tile</span></div>`;
+      return;
+    }
+    detail.classList.remove("is-empty");
+    detail.setAttribute("aria-label", `${element.name} details`);
     const category = CATEGORY_INFO[categoryKey(element)];
     const items = ELEMENT_ITEMS[element.symbol] || [["🧫","Tiny samples"],["⚛️","Atom science"],["🔬","Research"]];
     const found = state.progress.elements.includes(element.number);
     const elementRecipes = recipesForElement(element.symbol);
     const partnerNames = partnerSymbolsFor(element.symbol).map(symbol => elementBySymbol(symbol).name);
-    const detail = document.querySelector("#elementDetail");
     detail.innerHTML = `
       <div class="detail-header">
         <div class="detail-symbol" style="--tile-color:${elementColor(element)}">${escapeHtml(element.symbol)}</div>
@@ -590,7 +611,6 @@
       state.progress.elements.push(element.number);
       state.progress.elements.sort((a,b)=>a-b);
       saveProgress();
-      burstConfetti(16);
       showToast(`⭐ New ${element.name} sticker!`);
     } else if (fromTap) {
       playTone(420, .06);
@@ -881,7 +901,7 @@
     window.speechSynthesis.cancel();
     const message = new SpeechSynthesisUtterance(text);
     message.rate = .92;
-    message.pitch = 1.03;
+    message.pitch = 1.06;
     message.volume = 1;
     message.voice = preferredVoice;
     window.speechSynthesis.speak(message);
@@ -890,10 +910,12 @@
   function refreshPreferredVoice() {
     if (!("speechSynthesis" in window)) return;
     const voices = window.speechSynthesis.getVoices().filter(voice => /^en[-_]/i.test(voice.lang));
-    const qualityWords = /natural|neural|premium|enhanced|ava|aria|jenny|samantha|allison|susan|daniel|aaron|google us english|microsoft.*online/i;
+    const femaleWords = /female|woman|samantha|victoria|karen|moira|tessa|fiona|serena|ava|allison|susan|zira|aria|jenny|sonia|natasha|joanna|kendra|kimberly|salli|ivy|ana|google us english/i;
+    const maleWords = /\bmale\b|\bman\b|daniel|aaron|alex|fred|tom|guy|david|mark|george/i;
+    const qualityWords = /natural|neural|premium|enhanced|google us english|microsoft.*online/i;
     const robotWords = /compact|espeak|festival|robot/i;
     preferredVoice = voices
-      .map(voice => ({voice,score:(voice.localService?3:0)+(qualityWords.test(voice.name)?12:0)-(robotWords.test(voice.name)?10:0)+(/en[-_]US/i.test(voice.lang)?2:0)}))
+      .map(voice => ({voice,score:(femaleWords.test(voice.name)?50:0)-(maleWords.test(voice.name)?40:0)+(voice.localService?3:0)+(qualityWords.test(voice.name)?12:0)-(robotWords.test(voice.name)?10:0)+(/en[-_]US/i.test(voice.lang)?2:0)}))
       .sort((a,b)=>b.score-a.score)[0]?.voice || voices[0] || null;
   }
 
