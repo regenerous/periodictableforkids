@@ -137,9 +137,9 @@ h1 { margin-bottom: 0; font: 800 clamp(36px, 4vw, 54px)/.98 var(--font-title); l
 .legend-description strong { color: var(--ink); }
 .table-recipe-hint { min-height: 42px; margin-top: 12px; padding: 10px 13px; display: flex; align-items: center; gap: 8px; border-radius: 14px; background: #fff7d6; color: #6b5510; font-size: 12px; font-weight: 800; line-height: 1.35; }
 .table-recipe-hint strong { color: var(--ink); }
-.table-scroll { margin: 22px -5px 0; padding: 5px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-color: #bfc7ee transparent; }
+.table-scroll { margin: 22px -5px 0; padding: 14px 5px 18px; overflow-x: auto; overscroll-behavior-inline: contain; scrollbar-color: #bfc7ee transparent; }
 .periodic-table { min-width: 968px; min-height: 648px; display: grid; grid-template-columns: repeat(18, 50px); grid-template-rows: repeat(7, 68px) 16px repeat(2, 58px); gap: 6px 4px; justify-content: center; }
-.element-tile { position: relative; width: 50px; height: 68px; padding: 5px 3px 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; border-radius: 15px; background: var(--tile-color); color: var(--ink); box-shadow: inset 0 -4px 0 rgba(28,40,84,.08), 0 3px 0 rgba(54,64,105,.08); transition: transform .16s ease, box-shadow .16s ease; touch-action: manipulation; }
+.element-tile { position: relative; width: 50px; height: 68px; padding: 9px 3px 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; border: 0; border-radius: 15px; background: var(--tile-color); color: var(--ink); box-shadow: inset 0 -4px 0 rgba(28,40,84,.08), 0 3px 0 rgba(54,64,105,.08); transition: transform .16s ease, box-shadow .16s ease; touch-action: manipulation; }
 .element-tile:hover { transform: translateY(-4px) scale(1.06); z-index: 4; box-shadow: inset 0 -4px 0 rgba(28,40,84,.08), 0 8px 13px rgba(61,72,119,.2); }
 .element-tile:active { transform: scale(.9); }
 .element-tile.is-selected { z-index: 5; outline: 4px solid var(--purple); outline-offset: 2px; animation: selectedPop .38s ease; }
