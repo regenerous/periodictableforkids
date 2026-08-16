@@ -51,9 +51,9 @@
         <section class="table-card" aria-label="Interactive periodic table">
           <div class="table-tools">
             <p><strong>Color cousins</strong><span>Tap a color to spotlight its cousins. Hover to learn what it means.</span></p>
-            <button id="legendToggle" type="button" aria-expanded="false" aria-controls="legend">Show colors</button>
+            <button id="legendToggle" type="button" aria-expanded="true" aria-controls="legend">Hide colors</button>
           </div>
-          <div id="legend" class="legend" hidden></div>
+          <div id="legend" class="legend"></div>
           <div id="tableRecipeHint" class="table-recipe-hint" aria-live="polite"></div>
           <div class="table-scroll" tabindex="0" aria-label="Periodic table. Scroll sideways if needed.">
             <div id="periodicTable" class="periodic-table"></div>
@@ -109,6 +109,7 @@
             <button id="undoAtom" class="secondary-button" type="button" disabled>Undo</button>
             <button id="clearMixer" class="secondary-button" type="button" disabled>Start over</button>
             <button id="discoverMix" class="primary-button" type="button" disabled><span aria-hidden="true">✨</span> Craft it!</button>
+            <button id="craftAnother" class="primary-button craft-another-button" type="button" hidden><span aria-hidden="true">🧪</span> Craft another</button>
           </div>
         </section>
       </div>
@@ -123,7 +124,10 @@
           <h1 id="collectionTitle">My Sticker Book</h1>
           <p>Every new element and atom team gives you a sticker. Can you find them all?</p>
         </div>
-        <div class="collection-total"><span aria-hidden="true">⭐</span><strong id="collectionTotal">0</strong><small>stickers found</small></div>
+        <div class="collection-heading-actions">
+          <div class="collection-total"><span aria-hidden="true">⭐</span><strong id="collectionTotal">0</strong><small>stickers found</small></div>
+          <button id="resetStickers" class="reset-stickers-button" type="button"><span aria-hidden="true">↻</span> Reset Stickers</button>
+        </div>
       </div>
 
       <section class="awards-card" aria-labelledby="awardsTitle">
@@ -143,7 +147,19 @@
     </section>
   </main>
 
-  <footer><span>Periodic Table for Kids <b>v0.2.0</b></span><span>Made for curious kids and their grown-ups.</span></footer>
+  <footer><span>Periodic Table for Kids <b>v0.3.0</b></span><span>Made for curious kids and their grown-ups.</span></footer>
+
+  <div id="resetStickersModal" class="modal-backdrop" hidden>
+    <section class="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="resetStickersTitle" aria-describedby="resetStickersDescription" tabindex="-1">
+      <span class="confirm-dialog-icon" aria-hidden="true">⭐</span>
+      <h2 id="resetStickersTitle">Reset all stickers?</h2>
+      <p id="resetStickersDescription">This will lock every sticker and badge so you can discover them all again.</p>
+      <div class="confirm-dialog-actions">
+        <button id="cancelResetStickers" class="secondary-button" type="button">Keep my stickers</button>
+        <button id="confirmResetStickers" class="danger-button" type="button">Yes, reset them</button>
+      </div>
+    </section>
+  </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <div id="confetti" class="confetti" aria-hidden="true"></div>

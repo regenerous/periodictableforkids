@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="760" viewBox="0 0 1500 760" role="img" aria-labelledby="title desc">
+  <title id="title">Element tile readability options</title>
+  <desc id="desc">Three interface directions: larger tiles everywhere, magnify on hover or selection, and balanced wider tiles with wrapping names.</desc>
+  <defs>
+    <linearGradient id="page" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#e1fff7"/><stop offset=".58" stop-color="#edf4ff"/><stop offset="1" stop-color="#e1ecff"/></linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#414d7e" flood-opacity=".16"/></filter>
+    <filter id="tileShadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-color="#364069" flood-opacity=".18"/></filter>
+    <style>
+      .title{font:800 38px Arial,sans-serif;fill:#1c2854}.subtitle{font:700 17px Arial,sans-serif;fill:#5b688e}
+      .panelTitle{font:800 25px Arial,sans-serif;fill:#1c2854}.panelCopy{font:700 14px Arial,sans-serif;fill:#5b688e}.trade{font:800 13px Arial,sans-serif;fill:#46547c}
+      .badge{font:900 12px Arial,sans-serif;fill:#fff;letter-spacing:.08em}.num{font:900 10px Arial,sans-serif;fill:#1c2854;opacity:.72}.symbol{font:900 25px Arial,sans-serif;fill:#1c2854}.nameA{font:900 10px Arial,sans-serif;fill:#1c2854}.symbolB{font:900 19px Arial,sans-serif;fill:#1c2854}.nameB{font:900 7px Arial,sans-serif;fill:#1c2854}.symbolC{font:900 22px Arial,sans-serif;fill:#1c2854}.nameC{font:900 9px Arial,sans-serif;fill:#1c2854}.popName{font:900 17px Arial,sans-serif;fill:#1c2854}.popMeta{font:800 10px Arial,sans-serif;fill:#5b688e}
+    </style>
+  </defs>
+  <rect width="1500" height="760" fill="url(#page)"/>
+  <circle cx="76" cy="62" r="28" fill="#5c65f2"/><circle cx="76" cy="62" r="9" fill="#ffd65a"/><circle cx="98" cy="42" r="7" fill="#ff6e9e"/><circle cx="51" cy="79" r="6" fill="#65e0d1"/>
+  <text x="122" y="62" class="title">Make element names easier to read</text>
+  <text x="122" y="90" class="subtitle">Three kid-friendly directions • shown without discovery stars</text>
+
+  <!-- Option A -->
+  <g transform="translate(34 130)">
+    <rect width="454" height="585" rx="30" fill="#fff" filter="url(#shadow)"/>
+    <rect x="24" y="23" width="132" height="28" rx="14" fill="#5c65f2"/><text x="90" y="42" text-anchor="middle" class="badge">OPTION A</text>
+    <text x="24" y="84" class="panelTitle">Big tiles everywhere</text>
+    <text x="24" y="110" class="panelCopy">Names are always large—no action needed.</text>
+    <g transform="translate(26 142)" filter="url(#tileShadow)">
+      <g transform="translate(0 0)"><rect width="72" height="90" rx="18" fill="#ff9a78"/><text x="8" y="15" class="num">3</text><text x="36" y="47" text-anchor="middle" class="symbol">Li</text><text x="36" y="68" text-anchor="middle" class="nameA">Lithium</text></g>
+      <g transform="translate(80 0)"><rect width="72" height="90" rx="18" fill="#ffd36a"/><text x="8" y="15" class="num">4</text><text x="36" y="47" text-anchor="middle" class="symbol">Be</text><text x="36" y="68" text-anchor="middle" class="nameA">Beryllium</text></g>
+      <g transform="translate(160 0)"><rect width="72" height="90" rx="18" fill="#7de2a1"/><text x="8" y="15" class="num">5</text><text x="36" y="47" text-anchor="middle" class="symbol">B</text><text x="36" y="68" text-anchor="middle" class="nameA">Boron</text></g>
+      <g transform="translate(240 0)"><rect width="72" height="90" rx="18" fill="#82c9ff"/><text x="8" y="15" class="num">6</text><text x="36" y="47" text-anchor="middle" class="symbol">C</text><text x="36" y="68" text-anchor="middle" class="nameA">Carbon</text></g>
+      <g transform="translate(320 0)"><rect width="72" height="90" rx="18" fill="#82c9ff"/><text x="8" y="15" class="num">7</text><text x="36" y="47" text-anchor="middle" class="symbol">N</text><text x="36" y="68" text-anchor="middle" class="nameA">Nitrogen</text></g>
+      <g transform="translate(0 98)"><rect width="72" height="90" rx="18" fill="#ff9a78"/><text x="8" y="15" class="num">11</text><text x="36" y="47" text-anchor="middle" class="symbol">Na</text><text x="36" y="68" text-anchor="middle" class="nameA">Sodium</text></g>
+      <g transform="translate(80 98)"><rect width="72" height="90" rx="18" fill="#ffd36a"/><text x="8" y="15" class="num">12</text><text x="36" y="47" text-anchor="middle" class="symbol">Mg</text><text x="36" y="68" text-anchor="middle" class="nameA">Magnesium</text></g>
+      <g transform="translate(160 98)"><rect width="72" height="90" rx="18" fill="#77ddb5"/><text x="8" y="15" class="num">13</text><text x="36" y="47" text-anchor="middle" class="symbol">Al</text><text x="36" y="68" text-anchor="middle" class="nameA">Aluminum</text></g>
+      <g transform="translate(240 98)"><rect width="72" height="90" rx="18" fill="#7de2a1"/><text x="8" y="15" class="num">14</text><text x="36" y="47" text-anchor="middle" class="symbol">Si</text><text x="36" y="68" text-anchor="middle" class="nameA">Silicon</text></g>
+      <g transform="translate(320 98)"><rect width="72" height="90" rx="18" fill="#82c9ff"/><text x="8" y="15" class="num">15</text><text x="36" y="47" text-anchor="middle" class="symbol">P</text><text x="36" y="68" text-anchor="middle" class="nameA">Phosphorus</text></g>
+    </g>
+    <rect x="24" y="369" width="406" height="76" rx="18" fill="#eef0ff"/>
+    <text x="44" y="396" class="trade">✓ Easiest for ages 6–8 to scan</text><text x="44" y="420" class="trade">↔ More sideways swiping</text>
+    <text x="24" y="492" class="panelCopy">Approx. tile: 60×76 CSS px</text>
+    <text x="24" y="518" class="panelCopy">Name: 9–10 px, up to two lines</text>
+  </g>
+
+  <!-- Option B -->
+  <g transform="translate(523 130)">
+    <rect width="454" height="585" rx="30" fill="#fff" filter="url(#shadow)"/>
+    <rect x="24" y="23" width="132" height="28" rx="14" fill="#ff6e9e"/><text x="90" y="42" text-anchor="middle" class="badge">OPTION B</text>
+    <text x="24" y="84" class="panelTitle">Magnify on touch</text>
+    <text x="24" y="110" class="panelCopy">Keep the table compact; lift one tile up.</text>
+    <g transform="translate(38 145)" filter="url(#tileShadow)">
+      <g><rect width="52" height="68" rx="14" fill="#ff9a78"/><text x="6" y="12" class="num">11</text><text x="26" y="38" text-anchor="middle" class="symbolB">Na</text><text x="26" y="54" text-anchor="middle" class="nameB">Sodium</text></g>
+      <g transform="translate(60 0)"><rect width="52" height="68" rx="14" fill="#ffd36a"/><text x="6" y="12" class="num">12</text><text x="26" y="38" text-anchor="middle" class="symbolB">Mg</text><text x="26" y="54" text-anchor="middle" class="nameB">Magnesium</text></g>
+      <g transform="translate(120 0)"><rect width="52" height="68" rx="14" fill="#77ddb5"/><text x="6" y="12" class="num">13</text><text x="26" y="38" text-anchor="middle" class="symbolB">Al</text><text x="26" y="54" text-anchor="middle" class="nameB">Aluminum</text></g>
+      <g transform="translate(180 0)"><rect width="52" height="68" rx="14" fill="#7de2a1"/><text x="6" y="12" class="num">14</text><text x="26" y="38" text-anchor="middle" class="symbolB">Si</text><text x="26" y="54" text-anchor="middle" class="nameB">Silicon</text></g>
+      <g transform="translate(240 0)"><rect width="52" height="68" rx="14" fill="#82c9ff"/><text x="6" y="12" class="num">15</text><text x="26" y="38" text-anchor="middle" class="symbolB">P</text><text x="26" y="54" text-anchor="middle" class="nameB">Phosphorus</text></g>
+      <g transform="translate(300 0)"><rect width="52" height="68" rx="14" fill="#82c9ff"/><text x="6" y="12" class="num">16</text><text x="26" y="38" text-anchor="middle" class="symbolB">S</text><text x="26" y="54" text-anchor="middle" class="nameB">Sulfur</text></g>
+    </g>
+    <path d="M162 232v33" stroke="#5c65f2" stroke-width="4" stroke-linecap="round"/><path d="m154 257 8 9 8-9" fill="none" stroke="#5c65f2" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <g transform="translate(92 274)" filter="url(#shadow)"><rect width="270" height="116" rx="24" fill="#ffd36a" stroke="#fff" stroke-width="6"/><text x="18" y="24" class="num">12</text><text x="52" y="72" text-anchor="middle" class="symbol">Mg</text><text x="90" y="53" class="popName">Magnesium</text><text x="90" y="74" class="popMeta">Element 12 · Earthy metal</text><text x="90" y="94" class="popMeta">Tap to explore →</text></g>
+    <rect x="24" y="419" width="406" height="76" rx="18" fill="#fff0f3"/>
+    <text x="44" y="446" class="trade">✓ Fits more of the table at once</text><text x="44" y="470" class="trade">△ Other names stay tiny until tapped</text>
+    <text x="24" y="525" class="panelCopy">Works on hover, keyboard focus, and tap</text>
+  </g>
+
+  <!-- Option C -->
+  <g transform="translate(1012 130)">
+    <rect width="454" height="585" rx="30" fill="#fff" filter="url(#shadow)"/>
+    <rect x="24" y="23" width="188" height="28" rx="14" fill="#18aa8e"/><text x="118" y="42" text-anchor="middle" class="badge">OPTION C · BALANCED</text>
+    <text x="24" y="84" class="panelTitle">Wider + two-line names</text>
+    <text x="24" y="110" class="panelCopy">A moderate size boost with smart wrapping.</text>
+    <g transform="translate(26 142)" filter="url(#tileShadow)">
+      <g><rect width="64" height="80" rx="16" fill="#ff9a78"/><text x="7" y="14" class="num">11</text><text x="32" y="44" text-anchor="middle" class="symbolC">Na</text><text x="32" y="63" text-anchor="middle" class="nameC">Sodium</text></g>
+      <g transform="translate(72 0)"><rect width="64" height="80" rx="16" fill="#ffd36a"/><text x="7" y="14" class="num">12</text><text x="32" y="42" text-anchor="middle" class="symbolC">Mg</text><text x="32" y="59" text-anchor="middle" class="nameC"><tspan x="32">Magne-</tspan><tspan x="32" dy="10">sium</tspan></text></g>
+      <g transform="translate(144 0)"><rect width="64" height="80" rx="16" fill="#77ddb5"/><text x="7" y="14" class="num">13</text><text x="32" y="42" text-anchor="middle" class="symbolC">Al</text><text x="32" y="59" text-anchor="middle" class="nameC"><tspan x="32">Alumi-</tspan><tspan x="32" dy="10">num</tspan></text></g>
+      <g transform="translate(216 0)"><rect width="64" height="80" rx="16" fill="#7de2a1"/><text x="7" y="14" class="num">14</text><text x="32" y="44" text-anchor="middle" class="symbolC">Si</text><text x="32" y="63" text-anchor="middle" class="nameC">Silicon</text></g>
+      <g transform="translate(288 0)"><rect width="64" height="80" rx="16" fill="#82c9ff"/><text x="7" y="14" class="num">15</text><text x="32" y="42" text-anchor="middle" class="symbolC">P</text><text x="32" y="59" text-anchor="middle" class="nameC"><tspan x="32">Phos-</tspan><tspan x="32" dy="10">phorus</tspan></text></g>
+      <g transform="translate(0 88)"><rect width="64" height="80" rx="16" fill="#70d6d1"/><text x="7" y="14" class="num">26</text><text x="32" y="44" text-anchor="middle" class="symbolC">Fe</text><text x="32" y="63" text-anchor="middle" class="nameC">Iron</text></g>
+      <g transform="translate(72 88)"><rect width="64" height="80" rx="16" fill="#70d6d1"/><text x="7" y="14" class="num">27</text><text x="32" y="44" text-anchor="middle" class="symbolC">Co</text><text x="32" y="63" text-anchor="middle" class="nameC">Cobalt</text></g>
+      <g transform="translate(144 88)"><rect width="64" height="80" rx="16" fill="#70d6d1"/><text x="7" y="14" class="num">28</text><text x="32" y="44" text-anchor="middle" class="symbolC">Ni</text><text x="32" y="63" text-anchor="middle" class="nameC">Nickel</text></g>
+      <g transform="translate(216 88)"><rect width="64" height="80" rx="16" fill="#70d6d1"/><text x="7" y="14" class="num">29</text><text x="32" y="44" text-anchor="middle" class="symbolC">Cu</text><text x="32" y="63" text-anchor="middle" class="nameC">Copper</text></g>
+      <g transform="translate(288 88)"><rect width="64" height="80" rx="16" fill="#70d6d1"/><text x="7" y="14" class="num">30</text><text x="32" y="44" text-anchor="middle" class="symbolC">Zn</text><text x="32" y="63" text-anchor="middle" class="nameC">Zinc</text></g>
+    </g>
+    <rect x="24" y="345" width="406" height="96" rx="18" fill="#ddfbf4" stroke="#65e0d1" stroke-width="2"/>
+    <text x="44" y="373" class="trade">✓ Every name is larger all the time</text><text x="44" y="397" class="trade">✓ Most of the table still fits on iPad</text><text x="44" y="421" class="trade">↔ A little sideways swipe in portrait</text>
+    <text x="24" y="489" class="panelCopy">Approx. tile: 50×68 CSS px</text>
+    <text x="24" y="515" class="panelCopy">Name: 8–9 px, wraps to two lines</text>
+  </g>
+</svg>

@@ -6,7 +6,7 @@
 
 ### A periodic table children can touch, hear, mix, and collect.
 
-[![Release](https://img.shields.io/badge/release-v0.2.0-5c65f2?style=for-the-badge&logo=github)](https://github.com/regenerous/periodictableforkids/releases/tag/v0.2.0)
+[![Release](https://img.shields.io/badge/release-v0.3.0-5c65f2?style=for-the-badge&logo=github)](https://github.com/regenerous/periodictableforkids/releases/tag/v0.3.0)
 [![GitHub Pages](https://img.shields.io/badge/play-online-65e0d1?style=for-the-badge&logo=githubpages&logoColor=1c2854)](https://regenerous.github.io/periodictableforkids/)
 [![Ages 6–8](https://img.shields.io/badge/ages-6–8-ffd65a?style=for-the-badge)](#-made-for-young-explorers)
 [![iPad Friendly](https://img.shields.io/badge/iPad-friendly-ff6e9e?style=for-the-badge&logo=apple&logoColor=white)](#-ipad-and-touch-friendly)
@@ -85,11 +85,11 @@ Periodic Table for Kids introduces the periodic table without turning it into a 
 | 🫧 Explore | ⚛️ Watch | 🧪 Combine | ⭐ Collect |
 |:--:|:--:|:--:|:--:|
 | Tap all 118 elements | Rotate atoms in 3D | Fill a crafting table | Earn stickers and badges |
-| Filter color cousins | Move and zoom the model | Follow 10 animated recipes | Progress stays on the device |
+| Filter color cousins | Spin and zoom the model | Follow 10 animated recipes | Reset anytime for a new adventure |
 
 ## 🔎 Explore every element
 
-Every colorful bubble is a large touch target. Tap an element to see its animated 3D atom, hear its name, and discover three familiar things that contain or use it. Tap a legend color to spotlight one family of color cousins; hover or focus it for a kid-friendly explanation.
+Every colorful bubble is a large touch target with a bigger, two-line element name. Tap an element to see its animated 3D atom, hear its name, and discover three familiar things that contain or use it. Tap a legend color to spotlight one family of color cousins; hover or focus it for a kid-friendly explanation.
 
 ![The element table with Carbon selected and its animated atom visible](docs/readme/elements-and-atom.png)
 
@@ -97,7 +97,7 @@ Every colorful bubble is a large touch target. Tap an element to see its animate
 
 1. **Tap an element bubble.** Its color group and sticker appear immediately.
 2. **Follow the puzzle marks.** The table highlights other elements that share a crafting recipe.
-3. **Drag the 3D atom.** Spin it, switch to Move mode, or use the zoom controls.
+3. **Drag the 3D atom.** Spin it in any direction, use − and + to zoom, or tap Reset to return home.
 4. **Press the speaker.** The site chooses the best natural or premium English voice available on the device.
 5. **Look at the object cards.** Pencils, plants, water, phones, bikes, and other familiar examples connect elements to everyday life.
 
@@ -116,7 +116,7 @@ Before mixing anything, children see the difference between one atom and a molec
 
 ## 🧪 Make molecules and familiar compounds
 
-Choose a crafting clue, tap the glowing atom cards, and fill the nine-slot table. Animated ingredient meters show exactly how many atoms are still needed. When every meter is full, **Craft it!** unlocks a friendly explanation, formula, celebration, and collectible sticker.
+Choose a crafting clue, tap the glowing atom cards, and fill the nine-slot table. Animated ingredient meters show exactly how many atoms are still needed. When every meter is full, **Craft it!** pulls the ingredients together, transforms the table into a spinnable 3D atom team, fills the window with confetti, and unlocks a friendly explanation, formula, and collectible sticker.
 
 ![Two hydrogen atoms and one oxygen atom discovering a water sticker](docs/readme/molecule-maker.png)
 
@@ -138,7 +138,7 @@ Opening an element earns its sticker. Finding a recipe earns an Atom Team sticke
 
 ![The Sticker Book with badges, molecule discoveries, and element stickers](docs/readme/sticker-book.png)
 
-Progress is stored with browser `localStorage`, so children can leave and continue later on the same device. No name, login, email address, analytics profile, or cloud account is required.
+Progress is stored with browser `localStorage`, so children can leave and continue later on the same device. A confirmed **Reset Stickers** button lets them begin a fresh adventure without accidentally erasing their collection. No name, login, email address, analytics profile, or cloud account is required.
 
 ## 📱 iPad and touch friendly
 
@@ -224,7 +224,7 @@ Every shipped version is recorded in four places:
 - The [`CHANGELOG.md`](CHANGELOG.md)
 - A matching Git tag and GitHub Release
 
-Pushing `main` runs the test workflow and publishes the site through GitHub Pages. The current release is **v0.2.0**.
+Pushing `main` runs the test workflow and publishes the site through GitHub Pages. The current release is **v0.3.0**.
 
 ## 📚 Data and science note
 
