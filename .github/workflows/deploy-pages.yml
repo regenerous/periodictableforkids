@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -33,8 +33,27 @@ jobs:
           sleep 1
           npm test
 
-  deploy:
+  release:
     needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the release files
+        uses: actions/checkout@v4
+      - name: Publish the matching GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="v$(cat VERSION)"
+          if gh release view "$version" >/dev/null 2>&1; then
+            echo "$version is already published"
+          elif git ls-remote --exit-code --tags origin "refs/tags/$version" >/dev/null; then
+            gh release create "$version" --title "Bubble Lab $version" --notes-file CHANGELOG.md
+          else
+            echo "Tag $version is not available yet; skipping release creation"
+          fi
+
+  deploy:
+    needs: [test, release]
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
